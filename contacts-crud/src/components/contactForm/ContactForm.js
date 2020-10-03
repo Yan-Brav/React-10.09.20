@@ -13,10 +13,6 @@ export class ContactForm extends Component {
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
-        console.log('getDerivedStateFromProps');
-    }
-
     onDeleteBtnClick = () => {
         this.props.onDelete(this.props.contact);
     };
