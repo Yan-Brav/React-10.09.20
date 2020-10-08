@@ -3,6 +3,7 @@ import './App.css';
 
 import ContactsList from './components/contactsList/ContactsList';
 import ContactForm from './components/contactForm/ContactForm';
+import contactsService from './contactsService';
 
 class App extends React.Component {
     state = {
@@ -10,15 +11,17 @@ class App extends React.Component {
         contacts: [],
     };
 
-    componentDidMount(){
-        this.setState({
-            contacts: this.restoreState()
-        });
+    componentDidMount() {
+        contactsService.get().then(({ data }) =>
+            this.setState({
+                contacts: data,
+            })
+        );
     }
 
     getEmptyContact() {
         return {
-            age: 33,
+            // age: 33,
             name: '',
             surname: '',
             phone: '',
@@ -39,14 +42,12 @@ class App extends React.Component {
     };
 
     onDelete = (contact) => {
-        this.setState((state) => {
-            const contacts = state.contacts.filter((el) => el !== contact);
+        const contacts = this.state.contacts.filter((el) => el !== contact);
 
-            this.saveState(contacts);
-            return {
-                contacts,
-                selectedContact: this.getEmptyContact()
-            };
+        contactsService.delete(contact.id);
+        this.setState({
+            contacts,
+            selectedContact: this.getEmptyContact(),
         });
     };
 
@@ -61,29 +62,23 @@ class App extends React.Component {
     };
 
     createContact(contact) {
-        contact.id = Date.now();
-        this.setState((state) => {
-            const contacts = [...state.contacts, contact];
+        contactsService.post('', contact).then(({ data }) => {
+            const contacts = [...this.state.contacts, data];
 
-            this.saveState(contacts);
-            return {
+            this.setState({
                 contacts,
-                selectedContact: contact,
-            };
+                selectedContact: data,
+            });
         });
     }
 
     updateContact(contact) {
-        this.setState((state) => {
-            const contacts = state.contacts.map((el) =>
+        contactsService.put(contact.id, contact);
+        this.setState({
+            contacts: this.state.contacts.map((el) =>
                 el.id === contact.id ? contact : el
-            );
-
-            this.saveState(contacts);
-            return {
-                contacts,
-                selectedContact: contact,
-            };
+            ),
+            selectedContact: contact,
         });
     }
 
@@ -94,7 +89,7 @@ class App extends React.Component {
     restoreState() {
         const data = localStorage.getItem('contacts');
 
-       return data ? JSON.parse(data) : [];
+        return data ? JSON.parse(data) : [];
     }
 
     render() {

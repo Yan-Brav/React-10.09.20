@@ -9,7 +9,7 @@ export class ContactForm extends Component {
         console.log('contructor');
 
         this.state = {
-            ...props.contact
+            ...props.contact,
         };
     }
 
@@ -17,14 +17,14 @@ export class ContactForm extends Component {
         this.props.onDelete(this.props.contact);
     };
 
-    onContactFormSubmit = e => {
+    onContactFormSubmit = (e) => {
         e.preventDefault();
         this.props.onSave(this.state);
     };
 
-    onChange = e => {
+    onChange = (e) => {
         this.setState({
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -57,7 +57,7 @@ export class ContactForm extends Component {
                 />
                 <br />
 
-                <label htmlFor="ageInput">Age</label>
+                {/* <label htmlFor="ageInput">Age</label>
                 <input
                     type="text"
                     name="age"
@@ -65,7 +65,7 @@ export class ContactForm extends Component {
                     value={this.state.age}
                     onChange={this.onChange}
                 />
-                <br />
+                <br /> */}
 
                 <label htmlFor="phoneInput">Phone</label>
                 <input
